@@ -31,7 +31,7 @@ def load_traj(filename):
     return np.asarray(data[4], dtype=np.float64)  # xs_orig
 
 print("Loading data...")
-traj_ours = load_traj("Joint_Lifted_recon_new.p")
+traj_ours = load_traj("DualOpt_Best.p")
 traj_base = load_traj("DIM_recon_short.p")
 
 min_len = min(len(traj_ours), len(traj_base))
@@ -243,7 +243,7 @@ print("  Baseline :", w_rt_base)
 
 print("\nDone.")
 
-DO_PLOT = False
+DO_PLOT = True
 if DO_PLOT:
     t = np.arange(min_len) * dt
 
