@@ -1,6 +1,9 @@
 # ============================================================
-# FINAL ROBUST TRAINING SCRIPT
-# Config: 10k Steps + Mini-Batching(8) + DualOpt + BestSave
+# Author: Chris
+# Date: 2024-06-15
+# Description: Dual-Optimization with Multi-Shooting for Lorenz System Recurrence Map Learning
+# Step 1: Invariance measure with Sinkhorn on (state + delay) space
+# Step 2: Multi-shooting induced blocks on Poincaré section hits  
 # ============================================================
 
 import numpy as np
@@ -369,9 +372,12 @@ for step in range(Nsteps):
 
 print("Training complete.")
 
-# ============================================================
-# 10) Save
-# ============================================================
+import datetime
+
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+filename_final = f"DualOpt_MultiShoot_Auto_{timestamp}.p"
+filename_best = f"DualOpt_Best_{timestamp}.p" 
+
 # Save Final
 save_dict_final = {
     "config": {
@@ -388,9 +394,10 @@ save_dict_final = {
         "w2": np.array(w2_hist),
     }
 }
-with open("DualOpt_MultiShoot_Auto.p", "wb") as f:
+
+with open(filename_final, "wb") as f:
     pickle.dump(save_dict_final, f)
-print("Saved FINAL results.")
+print(f"Saved FINAL results to: {filename_final}")
 
 # Save Best
 if best_model_state_dict is not None:
@@ -408,13 +415,11 @@ if best_model_state_dict is not None:
             "loss_diag": np.array(loss_stage1_hist),
         }
     }
-    with open("DualOpt_Best.p", "wb") as f:
+    with open(filename_best, "wb") as f:
         pickle.dump(save_dict_best, f)
-    print(f"Saved BEST results (L2={best_L2_val:.4f} at iter {best_iter}).")
+    print(f"Saved BEST results to: {filename_best} (L2={best_L2_val:.4f} at iter {best_iter}).")
 
-# ============================================================
-# 11) Plots
-# ============================================================
+# Plots
 plt.figure()
 plt.plot(loss_total_hist, label="L_total")
 plt.legend()
